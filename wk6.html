@@ -1,0 +1,79 @@
+<html>
+<head>
+	<title>Animal GIFs</title>
+	
+<!-- // JQuery CDN here -->
+
+</head>
+
+<body>
+
+<div class="container">
+	<h1>Animal GIF Search Page!</h1>
+
+	<!-- Dump GIFs here -->
+	<div id= "gifsGoHere"></div>
+
+	<!-- Rendered buttons will go here -->
+	<div id="buttonsView"></div>
+
+	<button data-animal="Dog">Dog</button>
+	<button data-animal="Cat">Cat</button>
+	<button data-animal="Bird">Bird</button>
+	<button data-animal="Monkey">Monkey</button>
+	<button data-animal="Tiger">Tiger</button
+
+
+	<!--Creates form for Animal entry -->
+	<form id="animalForm">
+		<label for="animalInput">Add a GIF</label>
+		<input type="text" id=animalInput>
+
+	<!-- Button triggers new movie to be added -->
+	<input id="addAnimal" type="submit" value="Add a GIF">
+	</form>
+
+<script src='http://code.jquery.com/jquery-2.1.3.min.js'></script>
+
+<script type="text/javascript">
+
+// Initial array of animals
+var topics = ['Dog', 'Cat', 'Bird', 'Monkey', 'Tiger'];
+
+$('button').on('click'), function(){
+	var animal = $(this).attr('animal');
+	var queryURL = "http://api.giphy.com/v1/gifs/search?q"+animal+"&api_key=dc6zaTOxFJmzClimit=10";
+		// Generic function for dumping the JSON content for each button in the propor Div 
+		$.ajax({url: queryURL, method: 'GET'}).done(function(response){
+		$(gifsGoHere).html(JSON.stringify(response));
+	});
+		
+		//For loop through the array of animals
+		for (var i = 0; i < response.topics.length; i++) {
+
+		//Dynamically generate buttons for each animal in the array
+		var animalDiv = $('<div>'); //creates JQuery tags (beginning and end)
+		var p = $('<p>').text("Rating: "+response.topics[i].rating);
+		var animalImage = $('<img>');
+		animalImage.attr('src', response.topics[i].images.fixed_height.url);
+		animalDiv.append(p);
+		animalDiv.append(animalImage);
+		$('#gifsGoHere').append(animalDiv);
+
+		//This code will grab input from textbox
+		var animalTextbox = $('#animalInput').val().trim();
+
+		//Input is added to array
+		topics.push(animalTextbox);
+
+		//Users are able to click enter in place of button and wont transition to next page
+		return false;
+
+	}
+}	
+
+</script>
+
+
+</body>
+</html>
